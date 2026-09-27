@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="vi" data-theme="dark" data-key="pb" data-title-vi="Phạm Bách — Portfolio Data & Quant" data-title-en="Bach Pham — Data & Quant Portfolio">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phạm Bách — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Be+Vietnam+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script>(function(){try{var r=document.documentElement,k=r.dataset.key,t=localStorage.getItem(k+'-theme'),l=localStorage.getItem(k+'-lang');if(t)r.dataset.theme=t;if(l)r.lang=l}catch(e){}})();</script>
+<style>
+/* ===== shared kit styles ===== */
+html[lang="vi"] [data-en],html[lang="en"] [data-vi]{display:none!important}
+[data-lb]{cursor:zoom-in}
+#lb{position:fixed;inset:0;z-index:300;background:rgba(6,8,12,.94);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;padding:56px 64px}
+#lb.open{opacity:1;visibility:visible}
+#lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:100%;max-height:100%}
+#lb img{max-width:min(1200px,100%);max-height:calc(100vh - 150px);object-fit:contain;border-radius:8px;transform:scale(.96);transition:transform .45s cubic-bezier(.22,1,.36,1);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+#lb.open img{transform:none}
+#lb figcaption{color:#e8e8e8;font-size:14px;text-align:center;max-width:720px}
+#lb button{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:0;font-size:24px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .2s}
+#lb button:hover{background:rgba(255,255,255,.22)}
+#lb .lb-x{top:14px;right:14px}#lb .lb-p{left:12px;top:50%;transform:translateY(-50%)}#lb .lb-n{right:12px;top:50%;transform:translateY(-50%)}
+#lb .lb-c{position:absolute;top:24px;left:20px;color:#aaa;font:12px/1 monospace}
+@media (max-width:640px){#lb{padding:56px 8px}#lb .lb-p,#lb .lb-n{top:auto;bottom:14px;transform:none}}
+.hide{display:none!important}
+/* toggles */
+.pf-tools{display:flex;align-items:center;gap:8px}
+.pf-seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--seg-bg,transparent)}
+.pf-seg button{font:500 11.5px/1 var(--mono,monospace);padding:6px 9px;border-radius:999px;border:0;background:none;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
+.pf-seg button.on{background:var(--seg-on,var(--ink));color:var(--seg-on-ink,var(--bg))}
+.pf-ico{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--seg-bg,transparent);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:transform .35s}
+.pf-ico:hover{transform:rotate(20deg)}
+.pf-ico svg{width:17px;height:17px}
+.pf-ico .i-moon{display:none}
+:root[data-theme="dark"] .pf-ico .i-sun{display:none}:root[data-theme="dark"] .pf-ico .i-moon{display:block}
+.pf-cv{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.pf-cv svg{width:15px;height:15px}
+/* photo helpers */
+.shots{display:grid;gap:10px}
+.shots img{width:100%;height:100%;object-fit:cover;display:block}
+.cert-strip{display:flex;gap:10px;overflow-x:auto;padding:4px 0 10px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.cert-strip img{height:130px;width:auto;flex:none;scroll-snap-align:start;border-radius:6px;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+.cert-strip img:hover{transform:translateY(-4px)}
+.masonry{columns:4 220px;column-gap:12px}
+.masonry figure{break-inside:avoid;margin:0 0 12px;overflow:hidden;position:relative}
+.masonry img{width:100%;height:auto;display:block;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.masonry figure:hover img{transform:scale(1.04)}
+
+#lb.single .lb-p,#lb.single .lb-n,#lb.single .lb-c{display:none}
+
+:root{
+  --bg:#0b0e14;--bg3:#080a0f;--panel:#11161f;--panel2:#151b26;--line:#1f2835;--ink:#d6deeb;--muted:#6b7a90;--dim:#3a4658;
+  --green:#7ee787;--blue:#79c0ff;--purple:#d2a8ff;--orange:#ffa657;--red:#ff7b72;--yellow:#e3b341;
+  --scan:rgba(255,255,255,.012);--seg-bg:var(--panel);--seg-on:var(--green);--seg-on-ink:#0b0e14;
+  --mono:'JetBrains Mono',monospace;--sans:'Be Vietnam Pro',system-ui,sans-serif;--ease:cubic-bezier(.22,1,.36,1);color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff;--bg3:#f6f8fa;--panel:#f6f8fa;--panel2:#eef1f4;--line:#d0d7de;--ink:#1f2328;--muted:#656d76;--dim:#afb8c1;
+  --green:#1a7f37;--blue:#0550ae;--purple:#8250df;--orange:#953800;--red:#cf222e;--yellow:#9a6700;
+  --scan:rgba(0,0,0,0);--seg-bg:#fff;--seg-on:#1f2328;--seg-on-ink:#fff;color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--green);color:var(--bg)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;background:repeating-linear-gradient(0deg,var(--scan) 0 1px,transparent 1px 3px)}
+
+#boot{position:fixed;inset:0;z-index:200;background:var(--bg);padding:clamp(20px,6vw,80px);font-family:var(--mono);font-size:14px;color:var(--muted);transition:transform 1s var(--ease)}
+#boot.done{transform:translateY(-100%)}
+#boot p{white-space:pre-wrap;margin-bottom:4px}
+#boot .ok{color:var(--green)}#boot .cmd{color:var(--ink)}#boot .kw{color:var(--blue)}
+.caret{display:inline-block;width:9px;height:17px;background:var(--green);vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:stretch}
+nav .brand{display:flex;align-items:center;gap:8px;padding:0 18px;font-family:var(--mono);font-size:13px;border-right:1px solid var(--line);white-space:nowrap}
+nav .brand i{width:10px;height:10px;border-radius:50%;background:#ff5f57;box-shadow:16px 0 0 #febc2e,32px 0 0 #28c840;margin-right:36px}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding:14px 16px;border-right:1px solid var(--line);white-space:nowrap;position:relative;transition:color .3s,background .3s}
+.tabs a::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--green);transform:scaleX(0);transition:transform .4s var(--ease)}
+.tabs a:hover{color:var(--ink)}
+.tabs a.active{color:var(--ink);background:var(--panel)}
+.tabs a.active::before{transform:scaleX(1)}
+.tabs a .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:8px}
+nav .pf-tools{padding:0 12px;border-left:1px solid var(--line)}
+.btn-cv{font-family:var(--mono);font-size:12px;padding:7px 12px;border:1px solid var(--green);color:var(--green);border-radius:6px;transition:background .3s,color .3s}
+.btn-cv:hover{background:var(--green);color:var(--bg)}
+
+.status{position:fixed;bottom:0;left:0;right:0;z-index:50;height:26px;background:var(--bg3);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 14px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.status b{color:var(--green);font-weight:500}
+.status .r{display:flex;gap:18px}
+
+section{padding:clamp(90px,11vw,130px) clamp(16px,5vw,64px);max-width:1200px;margin:0 auto;position:relative}
+.path{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:14px}
+.path b{color:var(--green);font-weight:400}
+h2{font-size:clamp(30px,4.4vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
+h2 .c{color:var(--green)}
+.lead{color:var(--muted);max-width:660px;font-size:16px}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.1s!important}.d2{transition-delay:.2s!important}.d3{transition-delay:.3s!important}
+
+/* hero */
+#hero{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;padding-top:110px}
+.prompt{font-family:var(--mono);font-size:14px;color:var(--muted);margin-bottom:18px}
+.prompt b{color:var(--green);font-weight:400}
+h1{font-size:clamp(56px,9vw,116px);font-weight:700;letter-spacing:-.05em;line-height:.95}
+h1 .g{background:linear-gradient(90deg,var(--green),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.role{font-family:var(--mono);font-size:clamp(16px,2vw,21px);margin-top:26px}
+.role .kw{color:var(--purple)}.role .str{color:var(--orange)}
+#typed{border-right:2px solid var(--green);padding-right:2px}
+.hero .lead{margin-top:18px}
+.cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:13px;padding:13px 20px;border:1px solid var(--green);color:var(--green);border-radius:6px;position:relative;overflow:hidden;isolation:isolate;transition:color .4s,box-shadow .4s;display:inline-flex;align-items:center;gap:8px}
+.btn::before{content:"";position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease);z-index:-1}
+.btn:hover{color:var(--bg)}.btn:hover::before{transform:scaleX(1)}
+.btn.s{border-color:var(--line);color:var(--ink)}.btn.s::before{background:var(--ink)}
+.btn svg{width:15px;height:15px}
+.nn-wrap{position:relative;aspect-ratio:1/1;max-width:500px;width:100%;justify-self:center;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--panel),var(--bg));overflow:hidden}
+#nn{width:100%;height:100%;display:block}
+.nn-wrap .hd,.nn-wrap .ft{position:absolute;left:0;right:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;background:color-mix(in srgb,var(--bg) 60%,transparent)}
+.nn-wrap .hd{top:0;border-bottom:1px solid var(--line)}.nn-wrap .ft{bottom:0;border-top:1px solid var(--line)}
+.nn-wrap .hd b{color:var(--green);font-weight:400}
+
+/* windows */
+.win{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.win .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--panel2)}
+.win .bar i{width:10px;height:10px;border-radius:50%;background:var(--dim)}
+.win pre{font-family:var(--mono);font-size:13.5px;line-height:1.85;padding:18px 0;overflow-x:auto;white-space:normal}
+.win pre .ln{white-space:pre}
+.win pre .ln{display:block;padding:0 18px;opacity:0;transform:translateX(-10px);transition:opacity .5s,transform .5s var(--ease)}
+.win.in pre .ln{opacity:1;transform:none}
+.win pre .ln::before{content:attr(data-n);display:inline-block;width:26px;color:var(--dim);user-select:none}
+.k{color:var(--purple)}.s{color:var(--orange)}.n{color:var(--blue)}.cm{color:var(--muted)}.f{color:var(--green)}.v{color:var(--red)}
+
+.about{display:grid;grid-template-columns:minmax(240px,.7fr) 1.3fr;gap:28px;align-items:start}
+.about .portrait{grid-row:span 2}
+.portrait{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.portrait .bar{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted)}
+.portrait img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.fact{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--panel);transition:border-color .4s,transform .4s var(--ease)}
+.fact:hover{border-color:var(--green);transform:translateY(-3px)}
+.fact b{font-family:var(--mono);font-size:28px;color:var(--green);font-weight:500;display:block}
+.fact span{font-size:13px;color:var(--muted)}
+
+.term{background:var(--bg3);border:1px solid var(--line);border-radius:12px;padding:22px;font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto}
+.term .row{display:flex;justify-content:space-between;gap:20px;opacity:0;transition:opacity .3s}
+.term .row.on{opacity:1}
+.term .pass{color:var(--green)}
+.term .sum{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);color:var(--green)}
+.term .dots{color:var(--green);letter-spacing:2px}
+.term a{color:var(--blue);border-bottom:1px dashed var(--blue)}
+.school{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--panel);margin-bottom:16px}
+.school h3{font-size:20px;font-weight:600}
+.school span{font-family:var(--mono);font-size:13px;color:var(--muted)}
+
+/* notebook */
+.cell{display:grid;grid-template-columns:70px 1fr;gap:14px;margin-bottom:18px}
+.cell .io{font-family:var(--mono);font-size:12px;padding-top:16px;text-align:right}
+.cell .io.i{color:var(--blue)}.cell .io.o{color:var(--red)}
+.cell .box{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:18px 20px}
+.cell.out .box{background:transparent;border-style:dashed}
+.pub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:8px}
+.pub b{color:var(--green);font-weight:400}
+.cell h3{font-size:clamp(19px,2.2vw,26px);font-weight:600;letter-spacing:-.02em;line-height:1.3}
+.pipe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stage{border:1px solid var(--line);border-radius:8px;padding:16px;position:relative;background:var(--bg)}
+.stage .t{font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:6px}
+.stage h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.stage p{font-size:13px;color:var(--muted)}
+.stage::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--green);font-family:var(--mono);background:var(--panel)}
+.stage:last-child::after{display:none}
+.outrow{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+.gauge{width:140px;height:140px;position:relative}
+.gauge svg{transform:rotate(-90deg);width:100%;height:100%}
+.gauge .p{stroke-dasharray:377;stroke-dashoffset:377;transition:stroke-dashoffset 2s var(--ease)}
+.gauge b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:30px;font-weight:500;color:var(--green)}
+.drivers{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.tagrow span{padding:5px 10px;border-radius:5px;border:1px solid var(--line);color:var(--ink);background:var(--panel)}
+.tagrow span.hot{border-color:var(--orange);color:var(--orange)}
+.paper2{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:start}
+.paper2 .doc{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+.paper2 p{color:var(--muted);font-size:14px;margin-top:8px}
+.paper2 a.doi{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:12.5px;color:var(--blue);border-bottom:1px dashed var(--blue)}
+
+/* trading */
+.trade{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start}
+.chart{border:1px solid var(--line);border-radius:12px;background:var(--bg3);overflow:hidden}
+.chart .bar{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted);flex-wrap:wrap;gap:6px}
+.chart .bar b{color:var(--ink);font-weight:500}
+#tc{width:100%;height:320px;display:block}
+.chart .note{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:8px 14px;border-top:1px solid var(--line)}
+.feat{display:flex;flex-direction:column;gap:12px}
+.feat .it{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:var(--panel);transition:border-color .4s,transform .4s var(--ease)}
+.feat .it:hover{border-color:var(--blue);transform:translateX(4px)}
+.feat .it .t{font-family:var(--mono);font-size:11px;color:var(--blue);margin-bottom:4px}
+.feat .it h4{font-size:16px;font-weight:600;margin-bottom:4px}
+.feat .it p{font-size:13.5px;color:var(--muted)}
+.stack{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.stack span{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.shots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);transition:transform .4s var(--ease),border-color .3s}
+.shot:hover{transform:translateY(-4px);border-color:var(--green)}
+.shot img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top}
+.shot span{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 10px;border-top:1px solid var(--line)}
+.poster-row{display:grid;grid-template-columns:260px 1fr;gap:24px;margin-top:22px;align-items:start}
+.poster-row .poster{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.flow{list-style:none;counter-reset:s;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flow li{counter-increment:s;border:1px solid var(--line);border-radius:8px;padding:12px 14px 12px 44px;position:relative;font-size:14px;color:var(--muted);background:var(--panel)}
+.flow li::before{content:counter(s,decimal-leading-zero);position:absolute;left:12px;top:12px;font-family:var(--mono);font-size:12px;color:var(--green)}
+.flow li b{color:var(--ink);font-weight:600;display:block}
+
+/* awards */
+.awards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:34px}
+.aw{background:var(--panel);border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:1fr 150px;overflow:hidden;position:relative;transition:border-color .4s,transform .5s var(--ease)}
+.aw:hover{border-color:var(--yellow);transform:translateY(-4px)}
+.aw .code{padding:20px 22px;font-family:var(--mono);font-size:13px;line-height:1.8}
+.aw .medal{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid var(--yellow);color:var(--yellow);margin-bottom:8px}
+.aw .ind{padding-left:16px;display:block}
+.aw .desc{color:var(--muted);font-family:var(--sans);font-size:13.5px;line-height:1.55;display:block;padding-left:16px;margin:4px 0}
+.aw .cert{border-left:1px solid var(--line);background:var(--bg3);display:flex;align-items:center;justify-content:center;padding:10px}
+.aw .cert img{max-height:190px;width:auto;border-radius:4px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+.photos{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line);transition:transform .4s var(--ease)}
+.photos img:hover{transform:scale(1.03)}
+.photos .w2{grid-column:span 2;aspect-ratio:2/1}
+
+/* beyond */
+.beyond{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+.bx{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden;transition:transform .4s var(--ease),border-color .4s;display:flex;flex-direction:column}
+.bx:hover{transform:translateY(-4px);border-color:var(--purple)}
+.bx .im{background:var(--bg3);border-bottom:1px solid var(--line);height:190px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px}
+.bx .im img{max-height:100%;width:auto;border-radius:4px}
+.bx .tx{padding:18px 20px}
+.bx .t{font-family:var(--mono);font-size:11px;color:var(--purple)}
+.bx h4{font-size:17px;font-weight:600;margin:6px 0}
+.bx p,.bx li{font-size:13.5px;color:var(--muted)}
+.bx ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.bx li b{color:var(--ink)}
+.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.sk{border-left:2px solid var(--green);padding:6px 0 6px 18px}
+.sk h4{font-family:var(--mono);font-size:13px;color:var(--green);margin-bottom:10px;font-weight:500}
+.sk .stack span{font-size:12px;color:var(--ink)}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 20px}
+.filters button{font-family:var(--mono);font-size:12px;padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--muted);cursor:pointer}
+.filters button.on{border-color:var(--green);color:var(--green)}
+.masonry figure{border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+
+#contact{text-align:center}
+#contact .term{max-width:760px;margin:30px auto 0;text-align:left}
+footer{padding:26px clamp(16px,5vw,64px) 50px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+@media (max-width:1100px){nav .brand{display:none}}
+@media (max-width:960px){
+  #hero,.trade,.poster-row{grid-template-columns:1fr}
+  .about{grid-template-columns:1fr 1fr}.about .win{grid-column:1/-1}.about .portrait{grid-row:auto}
+  .awards,.beyond,.skills{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr}.stage::after{content:"↓";right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)}
+  .shots-grid{grid-template-columns:1fr 1fr}
+  .photos{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:620px){
+  .about{grid-template-columns:1fr}
+  .cell{grid-template-columns:1fr;gap:4px}.cell .io{text-align:left;padding-top:0}
+  .outrow,.paper2{grid-template-columns:1fr}.paper2 .doc{max-width:180px}
+  .aw{grid-template-columns:1fr}.aw .cert{border-left:0;border-top:1px solid var(--line)}
+  .flow{grid-template-columns:1fr}
+  .win pre,.term{font-size:12px}
+  .status .r span:nth-child(n+2){display:none}
+  .btn-cv .t{display:none}
+  nav .pf-tools{padding:0 8px;gap:6px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.win pre .ln,.term .row{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="boot"><div id="bootlog"></div><span class="caret"></span></div>
+
+<nav>
+  <div class="brand"><i></i>~/pham-bach</div>
+  <div class="tabs">
+    <a href="#hero"><span class="dot" style="background:var(--blue)"></span>index.tsx</a>
+    <a href="#about"><span class="dot" style="background:var(--yellow)"></span>about.py</a>
+    <a href="#tests"><span class="dot" style="background:var(--green)"></span>test_scores.py</a>
+    <a href="#research"><span class="dot" style="background:var(--orange)"></span>research.ipynb</a>
+    <a href="#bot"><span class="dot" style="background:var(--blue)"></span>trading_bot.py</a>
+    <a href="#awards"><span class="dot" style="background:var(--yellow)"></span>awards.json</a>
+    <a href="#beyond"><span class="dot" style="background:var(--purple)"></span>README.md</a>
+    <a href="#gallery"><span class="dot" style="background:var(--green)"></span>assets/</a>
+    <a href="#contact"><span class="dot" style="background:var(--red)"></span>contact.sh</a>
+  </div>
+  <div class="pf-tools">
+    <div class="pf-seg"><button data-setlang="vi">VI</button><button data-setlang="en">EN</button></div>
+    <button class="pf-ico" data-toggle-theme aria-label="Theme"><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <a class="pf-cv btn-cv" href="PhamBach_CV.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span class="t">cv.pdf</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero">
+    <div class="prompt reveal"><b>bach@hanoi</b>:~$ whoami</div>
+    <h1 class="reveal d1"><span class="scr" data-t="Pham">Pham</span><br><span class="g scr" data-t="Bach.">Bach.</span></h1>
+    <div class="role reveal d2"><span class="kw">role</span> = <span class="str">"<span id="typed"></span>"</span></div>
+    <p class="lead reveal d2"><span data-vi>Học sinh True North International School, xây dựng mô hình machine learning, AI giải thích được (XAI) và hệ thống giao dịch định lượng. 4 huy chương vàng quốc tế về AI, tài chính và chính sách.</span><span data-en>Student engineer at True North International School, building machine-learning models, explainable AI and quantitative trading systems. Four international gold medals across AI, finance and policy research.</span></p>
+    <div class="cta reveal d3">
+      <a class="btn" href="PhamBach_CV.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span data-vi>./tai_cv</span><span data-en>./download_cv</span></a>
+      <a class="btn s" href="#bot">./run trading_bot</a>
+    </div>
+  </div>
+  <div class="nn-wrap reveal d2">
+    <div class="hd"><span>model.forward()</span><b>● training</b></div>
+    <canvas id="nn"></canvas>
+    <div class="ft"><span>epoch <b id="ep" style="color:var(--ink);font-weight:400">0</b></span><span>layers [6, 9, 9, 4]</span></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="path reveal">src / <b>about.py</b></div>
+  <h2 class="reveal"><span data-vi>Nơi <span class="c">code</span> gặp <span class="c">thị trường</span>.</span><span data-en>Where <span class="c">code</span> meets <span class="c">markets</span>.</span></h2>
+  <div class="about">
+    <figure class="portrait reveal"><div class="bar">▣ bach.jpg</div><img src="images/portrait.jpg" alt="Phạm Bách" data-lb="me" data-cap-vi="Phạm Bách · cưỡi ngựa" data-cap-en="Bach Pham · horse riding"></figure>
+    <div class="reveal d1">
+      <p class="lead"><span data-vi>Mình làm ở giao điểm của khoa học dữ liệu và kinh tế: mô hình vừa chính xác, vừa giải thích được, vừa hữu ích cho quyết định thực tế, từ rủi ro y tế, phòng ngừa rủi ro tỷ giá đến giao dịch tự động.</span><span data-en>I work where data science meets economics: models that are accurate, explainable and useful for real decisions, from healthcare risk to currency hedging to automated trading.</span></p>
+      <div class="facts">
+        <div class="fact"><b data-count="4">0</b><span data-vi>HC Vàng quốc tế</span><span data-en>International golds</span></div>
+        <div class="fact"><b data-count="83" data-suf="%">0</b><span data-vi>Độ chính xác (XAI)</span><span data-en>Peak accuracy (XAI)</span></div>
+        <div class="fact"><b data-count="3" data-suf="×5">0</b><span data-vi>Điểm AP tuyệt đối</span><span data-en>AP scores of 5/5</span></div>
+        <div class="fact"><b data-count="2">0</b><span data-vi>Bài báo khoa học</span><span data-en>Research papers</span></div>
+      </div>
+    </div>
+    <div class="win reveal d2">
+      <div class="bar"><i></i><i></i><i></i>&nbsp; about.py</div>
+<pre><span class="ln" data-n="1"><span class="k">class</span> <span class="f">PhamBach</span>(<span class="n">Engineer</span>):</span>
+<span class="ln" data-n="2">    <span class="cm"># Hanoi, Vietnam · class of 2027</span></span>
+<span class="ln" data-n="3">    school = <span class="s">"True North International School"</span></span>
+<span class="ln" data-n="4">    focus  = [<span class="s">"ML"</span>, <span class="s">"XAI"</span>, <span class="s">"Quant Finance"</span>]</span>
+<span class="ln" data-n="5">    stack  = [<span class="s">"Python"</span>, <span class="s">"Pandas"</span>, <span class="s">"sklearn"</span>,</span>
+<span class="ln" data-n="6">              <span class="s">"SQL"</span>, <span class="s">"Flask"</span>, <span class="s">"Firebase"</span>, <span class="s">"CCXT"</span>]</span>
+<span class="ln" data-n="7">    also   = [<span class="s">"violin"</span>, <span class="s">"football"</span>, <span class="s">"riding"</span>]</span>
+<span class="ln" data-n="8"></span>
+<span class="ln" data-n="9">    <span class="k">def</span> <span class="f">approach</span>(self, problem):</span>
+<span class="ln" data-n="10">        data  = self.<span class="f">clean</span>(problem.data)</span>
+<span class="ln" data-n="11">        model = self.<span class="f">fit</span>(data, tune=<span class="v">True</span>)</span>
+<span class="ln" data-n="12">        <span class="k">return</span> self.<span class="f">explain</span>(model)</span>
+</pre>
+    </div>
+  </div>
+</section>
+
+<!-- TESTS -->
+<section id="tests">
+  <div class="path reveal">tests / <b>test_scores.py</b></div>
+  <h2 class="reveal"><span data-vi>Tất cả test <span class="c">đều pass</span>.</span><span data-en>All tests <span class="c">passing</span>.</span></h2>
+  <p class="lead reveal d1" style="margin-bottom:28px"><span data-vi>Học vấn và điểm thi chuẩn hoá.</span><span data-en>Education and standardized test results.</span></p>
+  <div class="school reveal"><h3>True North International School</h3><span>Hà Nội · 09/2024 – 06/2027</span></div>
+  <div class="term reveal" id="pytest">
+    <div class="row"><span>$ pytest tests/test_scores.py -v</span></div>
+    <div class="row"><span>collected 4 items</span></div>
+    <div class="row"><span>test_ap_microeconomics <span class="dots">........</span></span><span>5/5 <span class="pass">PASSED</span></span></div>
+    <div class="row"><span>test_ap_macroeconomics <span class="dots">........</span></span><span>5/5 <span class="pass">PASSED</span></span></div>
+    <div class="row"><span>test_ap_precalculus <span class="dots">...........</span></span><span>5/5 <span class="pass">PASSED</span></span></div>
+    <div class="row"><span>test_ap_computer_science_a <span class="dots">....</span></span><span>4/5 <span class="pass">PASSED</span></span></div>
+    <div class="row sum"><span>======== 4 passed in 0.42s ========</span></div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="path reveal">notebooks / <b>research.ipynb</b></div>
+  <h2 class="reveal"><span data-vi>Nghiên cứu <span class="c">khoa học</span></span><span data-en>Published <span class="c">research</span></span></h2>
+  <div class="cell reveal" style="margin-top:28px"><div class="io i">In [1]:</div><div class="box">
+    <div class="pub">IJMSM · Vol. 2, Issue 4 · <b>05/2025</b></div>
+    <h3>Performance Optimization in Healthcare Analytics via Explainable AI (XAI)</h3></div></div>
+  <div class="cell reveal d1"><div class="io i">In [2]:</div><div class="box"><div class="pipe">
+    <div class="stage"><div class="t">01 · preprocess</div><h4 data-vi>Xử lý dữ liệu</h4><h4 data-en>Data engineering</h4><p data-vi>Tích hợp nhiều bộ dữ liệu, cân bằng lớp bằng SMOTE &amp; ADASYN.</p><p data-en>Integrated datasets and balanced classes with SMOTE &amp; ADASYN.</p></div>
+    <div class="stage"><div class="t">02 · model</div><h4 data-vi>Kết hợp mô hình</h4><h4 data-en>Model fusion</h4><p data-vi>So sánh XGBoost, Random Forest…, tinh chỉnh bằng GridSearchCV.</p><p data-en>Compared XGBoost, Random Forest and others, tuned with GridSearchCV.</p></div>
+    <div class="stage"><div class="t">03 · explain</div><h4 data-vi>Giải thích mô hình</h4><h4 data-en>Interpretability</h4><p data-vi>Dùng SHAP &amp; LIME biến “hộp đen” thành insight minh bạch.</p><p data-en>SHAP &amp; LIME turn black-box outputs into transparent insights.</p></div>
+  </div></div></div>
+  <div class="cell out reveal d2"><div class="io o">Out[2]:</div><div class="box"><div class="outrow">
+    <div class="gauge" id="gauge"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--line)" stroke-width="10"/><circle class="p" cx="70" cy="70" r="60" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round"/></svg><b>83%</b></div>
+    <div class="drivers">peak_accuracy = <span style="color:var(--green)">0.83</span><br>key_risk_drivers:<div class="tagrow"><span class="hot">Glucose</span><span class="hot">BMI</span></div>toolkit:<div class="tagrow"><span>SMOTE</span><span>ADASYN</span><span>XGBoost</span><span>Random Forest</span><span>GridSearchCV</span><span>SHAP</span><span>LIME</span></div></div>
+  </div></div></div>
+  <div class="cell reveal"><div class="io i">In [3]:</div><div class="box"><div class="paper2">
+    <div class="doc"><img src="images/paper-ai-logistics.jpg" alt="" loading="lazy" data-lb="paper" data-cap-vi="Trang đầu bài báo IJSRM" data-cap-en="IJSRM paper, first page"></div>
+    <div><div class="pub">IJSRM · Vol. 13, Issue 05 · 2025 · <b data-vi>đồng tác giả</b><b data-en>co-author</b></div>
+      <h3>Applications of Artificial Intelligence (AI) in the Logistics Industry in Vietnam: Opportunities and Challenges</h3>
+      <p data-vi>Phân tích các ứng dụng AI trong logistics Việt Nam (dự báo nhu cầu, quản trị rủi ro, tối ưu vận hành, trải nghiệm khách hàng) và tác động của chúng tới ngành.</p>
+      <p data-en>Analyses AI applications in Vietnam's logistics sector (demand forecasting, risk management, operational efficiency, customer experience) and their impact on the industry.</p>
+      <a class="doi" href="https://doi.org/10.18535/ijsrm/v13i05.ec06" target="_blank" rel="noopener">doi: 10.18535/ijsrm/v13i05.ec06 ↗</a></div>
+  </div></div></div>
+</section>
+
+<!-- TRADING BOT -->
+<section id="bot">
+  <div class="path reveal">projects / <b>trading_bot.py</b> · 05/2025 – 01/2026</div>
+  <h2 class="reveal"><span data-vi>Trading Bot: <span class="c">trợ lý giao dịch tự động</span></span><span data-en>Trading Bot: <span class="c">an automated trading assistant</span></span></h2>
+  <p class="lead reveal d1" style="margin-bottom:30px"><span data-vi>Hệ thống giao dịch BTC/USDT trên Binance Testnet (môi trường an toàn), kết hợp chỉ báo kỹ thuật và ChatGPT để đưa ra khuyến nghị, có bộ quản trị rủi ro và báo cáo hiệu suất.</span><span data-en>A BTC/USDT trading system on Binance Testnet (a safe sandbox) that combines technical indicators with ChatGPT recommendations, a risk manager and performance reporting.</span></p>
+  <div class="trade">
+    <div class="chart reveal">
+      <div class="bar"><span><b>BTC/USDT</b> · 1h</span><span>MA(7) <span style="color:var(--orange)">━</span> MA(25) <span style="color:var(--purple)">━</span></span><span id="sig" style="color:var(--green)">signal: HOLD</span></div>
+      <canvas id="tc"></canvas>
+      <div class="note" data-vi>// dữ liệu giá mô phỏng: minh hoạ cách logic MA-crossover + RSI kích hoạt lệnh</div><div class="note" data-en>// simulated price data: shows how the MA-crossover + RSI logic triggers entries and exits</div>
+    </div>
+    <div class="feat">
+      <div class="it reveal"><div class="t">data/</div><h4 data-vi>Thu thập &amp; chỉ báo</h4><h4 data-en>Data &amp; indicators</h4><p data-vi>Lấy giá từ Binance Testnet; tính MA, RSI, ATR.</p><p data-en>Pulls prices from Binance Testnet; computes MA, RSI, ATR.</p><div class="stack"><span>Python</span><span>CCXT</span><span>MA</span><span>RSI</span><span>ATR</span></div></div>
+      <div class="it reveal d1"><div class="t">ai/</div><h4 data-vi>AI phân tích</h4><h4 data-en>AI analysis</h4><p data-vi>ChatGPT đưa khuyến nghị BUY / SELL / HOLD kèm độ tin cậy.</p><p data-en>ChatGPT returns BUY / SELL / HOLD with a confidence score.</p><div class="stack"><span>OpenAI API</span></div></div>
+      <div class="it reveal d2"><div class="t">risk/</div><h4 data-vi>Quản trị rủi ro</h4><h4 data-en>Risk manager</h4><p data-vi>Kiểm tra an toàn trước lệnh; tính khối lượng, stop-loss, take-profit theo ATR; log &amp; báo cáo.</p><p data-en>Safety gate before each order; ATR-based position size, stop-loss and take-profit; logging &amp; reports.</p><div class="stack"><span>SQLite</span><span>Tkinter GUI</span><span>.env</span></div></div>
+    </div>
+  </div>
+  <div class="shots-grid">
+    <figure class="shot reveal"><img src="images/bot-chart.jpg" alt="" loading="lazy" data-lb="bot" data-cap-vi="Giao diện bot: biểu đồ vốn" data-cap-en="Bot GUI: equity chart"><span>gui/equity_chart</span></figure>
+    <figure class="shot reveal d1"><img src="images/bot-status.jpg" alt="" loading="lazy" data-lb="bot" data-cap-vi="Trạng thái & log thời gian thực" data-cap-en="Live status & logs"><span>gui/status</span></figure>
+    <figure class="shot reveal d2"><img src="images/bot-chat.jpg" alt="" loading="lazy" data-lb="bot" data-cap-vi="Trò chuyện với trợ lý AI" data-cap-en="Chat with the AI assistant"><span>gui/chat</span></figure>
+    <figure class="shot reveal d3"><img src="images/bot-report.jpg" alt="" loading="lazy" data-lb="bot" data-cap-vi="Báo cáo hiệu suất giao dịch" data-cap-en="Trading performance report"><span>reports/performance.html</span></figure>
+  </div>
+  <div class="poster-row reveal">
+    <div class="poster"><img src="images/bot-poster.jpg" alt="" loading="lazy" data-lb="bot" data-cap-vi="Poster dự án Trading Bot" data-cap-en="Trading Bot project poster"></div>
+    <div>
+      <div class="path" style="margin-bottom:10px">pipeline / <b>main_loop()</b></div>
+      <ol class="flow">
+        <li><b data-vi>Thu thập dữ liệu</b><b data-en>Collect data</b><span data-vi>Giá BTC/USDT từ Binance</span><span data-en>BTC/USDT prices from Binance</span></li>
+        <li><b data-vi>Tính chỉ số</b><b data-en>Compute indicators</b>MA · RSI · ATR</li>
+        <li><b data-vi>AI phân tích</b><b data-en>AI analysis</b>BUY / SELL / HOLD</li>
+        <li><b data-vi>Kiểm tra rủi ro</b><b data-en>Risk check</b><span data-vi>Có an toàn để giao dịch?</span><span data-en>Is it safe to trade?</span></li>
+        <li><b data-vi>Tính vị thế</b><b data-en>Position sizing</b>Size · SL · TP</li>
+        <li><b data-vi>Thực thi</b><b data-en>Execute</b><span data-vi>Gửi lệnh nếu hợp lệ</span><span data-en>Send the order if valid</span></li>
+        <li><b>Log</b><span data-vi>Lưu vào database</span><span data-en>Store in the database</span></li>
+        <li><b data-vi>Báo cáo</b><b data-en>Report</b><span data-vi>Tổng hợp hiệu suất, vẽ biểu đồ</span><span data-en>Summarise performance and chart it</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="path reveal">data / <b>awards.json</b></div>
+  <h2 class="reveal"><span data-vi>Giải thưởng <span class="c">quốc tế</span></span><span data-en>Honors &amp; <span class="c">awards</span></span></h2>
+  <div class="awards">
+    <div class="aw reveal"><div class="code"><span class="medal">GOLD · ZLATO</span><br>{<span class="ind"><span class="n">"event"</span>: <span class="s">"INOVA 2025 · 49th Int'l Invention Show"</span>,</span><span class="ind"><span class="n">"where"</span>: <span class="s">"Croatia"</span>, <span class="n">"year"</span>: <span class="v">2025</span>,</span><span class="ind"><span class="n">"project"</span>:</span><span class="desc" data-vi>Rủi ro tỷ giá đối với doanh nghiệp xuất nhập khẩu Việt Nam: thực trạng và giải pháp; khung định lượng và chiến lược phòng ngừa rủi ro.</span><span class="desc" data-en>Exchange-rate risk for Vietnamese import-export enterprises: current situation and solutions, with a quantitative framework and hedging strategies.</span>}</div>
+      <div class="cert"><img src="images/cert-inova.jpg" alt="" loading="lazy" data-lb="aw" data-cap-vi="HC Vàng INOVA 2025" data-cap-en="INOVA 2025 Gold (Zlato)"></div></div>
+    <div class="aw reveal d1"><div class="code"><span class="medal">GOLD</span><br>{<span class="ind"><span class="n">"event"</span>: <span class="s">"Int'l Creative Papers Conference (ICPC) 2025"</span>,</span><span class="ind"><span class="n">"where"</span>: <span class="s">"Seoul, Korea"</span>, <span class="n">"date"</span>: <span class="s">"2025-01-17"</span>,</span><span class="ind"><span class="n">"project"</span>:</span><span class="desc" data-vi>Phát hiện bất thường bằng Deep Neural Variational Autoencoder kết hợp Oblique Random Forest, tăng cường quản trị rủi ro trên dữ liệu nhiều chiều (nhóm 4 thành viên).</span><span class="desc" data-en>Detection via a Deep Neural Variational Autoencoder with an Oblique Random Forest, automating anomaly detection in high-dimensional data (team of four).</span>}</div>
+      <div class="cert"><img src="images/cert-icpc.jpg" alt="" loading="lazy" data-lb="aw" data-cap-vi="HC Vàng ICPC 2025" data-cap-en="ICPC 2025 Gold Award"></div></div>
+    <div class="aw reveal"><div class="code"><span class="medal">GOLD</span><br>{<span class="ind"><span class="n">"event"</span>: <span class="s">"World Invention Creativity Olympic (WICO) 2026"</span>,</span><span class="ind"><span class="n">"where"</span>: <span class="s">"Seoul, Korea"</span>, <span class="n">"date"</span>: <span class="s">"2026-07-16..18"</span>,</span><span class="ind"><span class="n">"project"</span>:</span><span class="desc" data-vi>Thu hút FDI vào công nghiệp công nghệ cao tại Hà Nội trong bối cảnh phát triển Khu CNC Hoà Lạc: thực trạng, cơ hội và khuyến nghị chính sách.</span><span class="desc" data-en>Attracting FDI into high-tech industries in Hanoi in the context of Hoa Lac Hi-Tech Park: current status, opportunities and policy implications.</span>}</div>
+      <div class="cert"><img src="images/cert-wico.jpg" alt="" loading="lazy" data-lb="aw" data-cap-vi="HC Vàng WICO 2026" data-cap-en="WICO 2026 Gold Award"></div></div>
+    <div class="aw reveal d1"><div class="code"><span class="medal">GOLD</span><br>{<span class="ind"><span class="n">"event"</span>: <span class="s">"AXGO AX Global Olympiad 2026"</span>,</span><span class="ind"><span class="n">"where"</span>: <span class="s">"Korea"</span>, <span class="n">"date"</span>: <span class="s">"2026-07-14"</span>,</span><span class="ind"><span class="n">"project"</span>:</span><span class="desc" data-vi>Ứng dụng phân tích kinh doanh để xây dựng chiến lược marketing đa kênh cho nền tảng LocReset của GTE Localize.</span><span class="desc" data-en>Applying business analysis to develop a multi-channel marketing strategy for GTE Localize's LocReset.</span>}</div>
+      <div class="cert"><img src="images/cert-axgo.jpg" alt="" loading="lazy" data-lb="aw" data-cap-vi="Giải Vàng AXGO 2026" data-cap-en="AXGO 2026 Gold Award"></div></div>
+  </div>
+  <div class="path reveal" style="margin-top:34px">assets / <b>competitions/</b></div>
+  <div class="photos reveal">
+    <img class="w2" src="images/axgo-1.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Thuyết trình tại chung kết quốc tế AXGO 2026" data-cap-en="Presenting at the AXGO 2026 International Finals">
+    <img src="images/axgo-4.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="AXGO 2026" data-cap-en="AXGO 2026">
+    <img src="images/wico-1.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Nhận HC Vàng WICO 2026 tại Seoul" data-cap-en="WICO 2026 Gold in Seoul">
+    <img class="w2" src="images/wico-4.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Đoàn Việt Nam tại WICO 2026" data-cap-en="Vietnam delegation at WICO 2026">
+    <img class="w2" src="images/axgo-5.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Phần thi nhóm AXGO" data-cap-en="AXGO team presentation">
+    <img src="images/axgo-6.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Theo dõi các phần trình bày" data-cap-en="Following the presentations">
+    <img src="images/wico-2.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="WICO 2026" data-cap-en="WICO 2026">
+    <img class="w2" src="images/wico-3.jpg" alt="" loading="lazy" data-lb="comp" data-cap-vi="Tại Seoul National University of Education" data-cap-en="At Seoul National University of Education">
+  </div>
+</section>
+
+<!-- BEYOND -->
+<section id="beyond">
+  <div class="path reveal"><b>README.md</b></div>
+  <h2 class="reveal"><span data-vi>Ngoài <span class="c">terminal</span></span><span data-en>Beyond the <span class="c">terminal</span></span></h2>
+  <div class="beyond">
+    <div class="bx reveal"><div class="im"><img src="images/cert-violin-muse.jpg" alt="" loading="lazy" data-lb="bx" data-cap-vi="Giải Nhì violin · The Muse" data-cap-en="Violin 2nd Prize · The Muse"><img src="images/cert-violin-malta.jpg" alt="" loading="lazy" data-lb="bx" data-cap-vi="Giải Đặc biệt violin · Malta International Music Competition" data-cap-en="Violin Special Prize · Malta International Music Competition"></div>
+      <div class="tx"><div class="t">performing_arts</div><h4 data-vi>Nghệ sĩ violin cổ điển</h4><h4 data-en>Classical violinist</h4><ul><li data-vi><b>Giải Nhì</b> · Muse International Music Competition</li><li data-en><b>Second Prize</b> · Muse International Music Competition</li><li data-vi><b>Giải Đặc biệt</b> · Malta International Music Competition</li><li data-en><b>Special Prize</b> · Malta International Music Competition</li></ul></div></div>
+    <div class="bx reveal d1"><div class="im"><img src="images/cert-warm-winter.jpg" alt="" loading="lazy" data-lb="bx" data-cap-vi="Chứng nhận Nhà hảo tâm · Mùa Đông Ấm 2025" data-cap-en="Donor certificate · Warm Winter 2025"></div>
+      <div class="tx"><div class="t">community · 2025</div><h4 data-vi>Tình nguyện "Mùa Đông Ấm"</h4><h4 data-en>"Warm Winter" volunteer</h4><p data-vi>Điều phối quyên góp và trao đồ mùa đông cho các gia đình khó khăn ở Lao Chải, Tuyên Quang; được ghi nhận là Nhà hảo tâm.</p><p data-en>Coordinated donations and delivered winter supplies to families in Lao Chai, Tuyen Quang; recognised as a donor.</p></div></div>
+    <div class="bx reveal d2"><div class="im"><img src="images/portrait.jpg" alt="" loading="lazy" data-lb="bx" data-cap-vi="Cưỡi ngựa" data-cap-en="Horse riding" style="width:100%;height:100%;object-fit:cover;object-position:50% 12%"></div>
+      <div class="tx"><div class="t">athletics · 2025</div><h4 data-vi>Thể thao</h4><h4 data-en>Athletics</h4><p data-vi>Thành viên CLB bóng đá &amp; cầu lông của trường, thi đấu giao hữu liên trường; cưỡi ngựa.</p><p data-en>School football &amp; badminton clubs, inter-school friendlies; horse riding.</p></div></div>
+  </div>
+  <div class="skills">
+    <div class="sk reveal"><h4>// financial_analysis</h4><div class="stack"><span>Algo trading</span><span>CCXT</span><span>RSI</span><span>MACD</span><span>Quant risk</span></div></div>
+    <div class="sk reveal d1"><h4>// data_science</h4><div class="stack"><span>XGBoost</span><span>Random Forest</span><span>SHAP</span><span>LIME</span><span>SMOTE</span><span>ADASYN</span></div></div>
+    <div class="sk reveal d2"><h4>// tools</h4><div class="stack"><span>Python</span><span>Pandas</span><span>scikit-learn</span><span>SQL</span><span>Flask</span><span>Firebase</span></div></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="path reveal">assets / <b>*.jpg</b></div>
+  <h2 class="reveal"><span data-vi>Thư viện <span class="c">ảnh</span></span><span data-en>Photo <span class="c">gallery</span></span></h2>
+  <div class="filters reveal" data-filters="#masonry">
+    <button class="on" data-filter="all">--all</button><button data-filter="aw">--awards</button><button data-filter="ev">--events</button><button data-filter="bot">--projects</button><button data-filter="life">--life</button>
+  </div>
+  <div class="masonry" id="masonry"></div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="path reveal"><b>contact.sh</b></div>
+  <h2 class="reveal"><span data-vi>Cùng <span class="c">build</span> điều gì đó.</span><span data-en>Let's <span class="c">build</span> something.</span></h2>
+  <p class="lead reveal d1" style="margin:0 auto"><span data-vi>Sẵn sàng cho hợp tác nghiên cứu, dự án dữ liệu và các cuộc thi.</span><span data-en>Open to research collaborations, data projects and competitions.</span></p>
+  <div class="term reveal d2">
+    <div>$ ./contact.sh --to bach</div>
+    <div style="color:var(--muted)">› name: <span style="color:var(--ink)">Pham Bach</span></div>
+    <div style="color:var(--muted)">› location: <span style="color:var(--ink)">Hanoi, Vietnam</span></div>
+    <div style="color:var(--muted)">› email: <span id="mail"></span></div>
+    <div style="color:var(--muted)">› cv: <a href="PhamBach_CV.pdf" download>PhamBach_CV.pdf</a></div>
+    <div style="color:var(--green)">✓ ready to connect<span class="caret" style="margin-left:6px"></span></div>
+  </div>
+</section>
+
+<footer><span>© 2026 Pham Bach</span><span>built with curiosity · compiled in Hanoi</span></footer>
+<div class="status"><span><b>●</b> main · <span id="sec">index.tsx</span></span><div class="r"><span id="scrollp">Ln 1</span><span>UTF-8</span><span>Python 3.12</span></div></div>
+
+<script>
+/* ===== shared portfolio kit: language, theme, reveal, counters, lightbox, gallery ===== */
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
+const KEY=root.dataset.key||'pf';
+const store={get:k=>{try{return localStorage.getItem(KEY+'-'+k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(KEY+'-'+k,v)}catch(e){}}};
+window.PF={store};
+/* language */
+function setLang(l){root.lang=l;store.set('lang',l);$$('[data-setlang]').forEach(b=>b.classList.toggle('on',b.dataset.setlang===l));
+  const t=root.dataset['title'+(l==='en'?'En':'Vi')];if(t)document.title=t;document.dispatchEvent(new CustomEvent('pf:lang',{detail:l}))}
+$$('[data-setlang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.setlang)));
+setLang(root.lang==='en'?'en':'vi');
+/* theme */
+function setTheme(t){root.dataset.theme=t;store.set('theme',t);document.dispatchEvent(new CustomEvent('pf:theme',{detail:t}))}
+$$('[data-toggle-theme]').forEach(b=>b.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark')));
+/* counters */
+function count(el){const t=parseFloat(el.dataset.count),d=+(el.dataset.dec||0),s=el.dataset.suf||'',p=el.dataset.pre||'',st=performance.now();
+  (function f(n){const k=Math.min(1,(n-st)/1600),e=1-Math.pow(1-k,4);el.textContent=p+(t*e).toFixed(d)+s;if(k<1)requestAnimationFrame(f)})(st)}
+window.PF.count=count;
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target;el.classList.add('in');
+  if(el.dataset.count)count(el);el.querySelectorAll('[data-count]').forEach(count);
+  el.querySelectorAll('[data-w]').forEach(b=>b.style.width=b.dataset.w+'%');
+  el.dispatchEvent(new CustomEvent('pf:in'));io.unobserve(el)}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+window.PF.observe=el=>io.observe(el);
+function startReveal(){$$('.reveal,.rv').forEach(el=>io.observe(el))}
+window.PF.startReveal=startReveal;
+/* gallery filter */
+$$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{const g=b.closest('[data-filters]');g.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('on',x===b));
+  const tgt=$(g.dataset.filters);tgt.querySelectorAll('[data-c]').forEach(f=>f.classList.toggle('hide',b.dataset.filter!=='all'&&!f.dataset.c.split(' ').includes(b.dataset.filter)))}));
+/* lightbox */
+const lb=document.createElement('div');lb.id='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');
+lb.innerHTML='<button class="lb-x" aria-label="Close">×</button><button class="lb-p" aria-label="Previous">‹</button><figure><img alt=""><figcaption></figcaption></figure><button class="lb-n" aria-label="Next">›</button><span class="lb-c"></span>';
+document.body.appendChild(lb);
+const li=lb.querySelector('img'),lc=lb.querySelector('figcaption'),ln=lb.querySelector('.lb-c');let grp=[],ix=0;
+const imgOf=el=>el.tagName==='IMG'?el:el.querySelector('img');
+function show(){const im=grp[ix];li.src=im.currentSrc||im.src;lc.textContent=im.dataset['cap'+(root.lang==='en'?'En':'Vi')]||im.alt||'';ln.textContent=(ix+1)+' / '+grp.length;lb.classList.toggle('single',grp.length<2)}
+function open(el){const g=el.dataset.lb;grp=$$('[data-lb="'+g+'"]').filter(x=>!x.closest('.hide')).map(imgOf);ix=Math.max(0,grp.indexOf(imgOf(el)));show();lb.classList.add('open');document.body.style.overflow='hidden'}
+function close(){lb.classList.remove('open');document.body.style.overflow=''}
+function step(d){ix=(ix+d+grp.length)%grp.length;show()}
+document.addEventListener('click',e=>{const z=e.target.closest('[data-lb]');if(z&&!lb.contains(z)){e.preventDefault();open(z)}});
+lb.querySelector('.lb-x').onclick=close;lb.querySelector('.lb-p').onclick=e=>{e.stopPropagation();step(-1)};lb.querySelector('.lb-n').onclick=e=>{e.stopPropagation();step(1)};
+lb.addEventListener('click',e=>{if(e.target===lb||e.target.tagName==='FIGURE')close()});
+addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')step(-1);if(e.key==='ArrowRight')step(1)});
+let tx=0;lb.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});lb.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)step(d<0?1:-1)});
+})();
+
+/* ===== Set the email here ===== */
+const EMAIL='';
+(()=>{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const setMail=()=>{$('#mail').innerHTML=EMAIL?`<a href="mailto:${EMAIL}">${EMAIL}</a>`:(document.documentElement.lang==='en'?'<span style="color:var(--ink)">available on request</span>':'<span style="color:var(--ink)">cung cấp khi có yêu cầu</span>')};setMail();document.addEventListener('pf:lang',setMail);
+
+const G=[['cert-inova','aw','HC Vàng INOVA 2025','INOVA 2025 Gold'],['axgo-2','ev','AXGO 2026','AXGO 2026'],['bot-poster','bot','Poster Trading Bot','Trading Bot poster'],['wico-1','ev','WICO 2026','WICO 2026'],
+['cert-icpc','aw','HC Vàng ICPC 2025','ICPC 2025 Gold'],['axgo-3','ev','AXGO 2026','AXGO 2026'],['cert-wico','aw','HC Vàng WICO 2026','WICO 2026 Gold'],['portrait','life','Cưỡi ngựa','Horse riding'],
+['bot-chart','bot','Giao diện bot','Bot GUI'],['wico-4','ev','Đoàn Việt Nam tại WICO','Vietnam delegation at WICO'],['cert-axgo','aw','Giải Vàng AXGO 2026','AXGO 2026 Gold'],['axgo-7','ev','AXGO 2026','AXGO 2026'],
+['cert-violin-muse','life','Giải Nhì violin','Violin 2nd Prize'],['wico-2','ev','WICO 2026','WICO 2026'],['bot-report','bot','Báo cáo hiệu suất','Performance report'],['cert-violin-malta','life','Giải Đặc biệt violin, Malta','Violin Special Prize, Malta'],
+['axgo-5','ev','Phần thi nhóm','Team presentation'],['wico-3','ev','Seoul 2026','Seoul 2026'],['cert-warm-winter','life','Mùa Đông Ấm 2025','Warm Winter 2025'],['bot-status','bot','Trạng thái bot','Bot status'],['axgo-1','ev','Chung kết AXGO','AXGO finals'],['bot-chat','bot','Chat với AI','AI chat']];
+$('#masonry').innerHTML=G.map(([f,c,vi,en])=>`<figure data-c="${c}"><img src="images/${f}.jpg" loading="lazy" alt="" data-lb="gal" data-cap-vi="${vi}" data-cap-en="${en}"></figure>`).join('');
+
+const lines=[['cmd','$ python bach.py --init'],['','loading modules: <span class="kw">pandas</span>, <span class="kw">sklearn</span>, <span class="kw">xgboost</span>, <span class="kw">shap</span>, <span class="kw">ccxt</span>'],['ok','[✓] data pipeline ready'],['ok','[✓] models loaded (4 gold medals)'],['ok','[✓] portfolio compiled']];
+const log=$('#bootlog');let i=0;
+(function nx(){if(i<lines.length){const p=document.createElement('p');p.className=lines[i][0];p.innerHTML=lines[i][1];log.append(p);i++;setTimeout(nx,i===1?300:180)}else setTimeout(()=>{$('#boot').classList.add('done');go()},320)})();
+const CH='!<>-_\\/[]{}—=+*^?#01';
+function scramble(el){const t=el.dataset.t;let f=0;const max=t.length*4;const iv=setInterval(()=>{el.textContent=t.split('').map((c,k)=>k<f/4?c:CH[Math.random()*CH.length|0]).join('');if(++f>max){el.textContent=t;clearInterval(iv)}},30)}
+const roles={vi:['nhà khoa học dữ liệu','nghiên cứu ML','lập trình viên quant','nghệ sĩ violin'],en:['data scientist','ML researcher','quant developer','violinist']};let ri=0,ci=0,del=false;
+function type(){const R=roles[document.documentElement.lang]||roles.vi,w=R[ri%R.length];$('#typed').textContent=w.slice(0,ci);
+  if(!del&&ci<w.length){ci++;setTimeout(type,70)}else if(!del){del=true;setTimeout(type,1500)}else if(ci>0){ci--;setTimeout(type,35)}else{del=false;ri++;setTimeout(type,300)}}
+function go(){$$('.scr').forEach(scramble);type();PF.startReveal()}
+$('.win').addEventListener('pf:in',e=>e.target.querySelectorAll('.ln').forEach((l,k)=>l.style.transitionDelay=k*.07+'s'));
+$('#pytest').addEventListener('pf:in',e=>e.target.querySelectorAll('.row').forEach((r,k)=>setTimeout(()=>r.classList.add('on'),k*240)));
+$('#gauge').closest('.reveal').addEventListener('pf:in',()=>setTimeout(()=>$('#gauge .p').style.strokeDashoffset=377*(1-.83),300));
+
+const tabs=$$('.tabs a'),secs=tabs.map(a=>$(a.getAttribute('href')));
+function onS(){let c=0;secs.forEach((s,k)=>{if(s.getBoundingClientRect().top<innerHeight*.4)c=k});
+  tabs.forEach((a,k)=>a.classList.toggle('active',k===c));$('#sec').textContent=tabs[c].textContent.trim();$('#scrollp').textContent='Ln '+Math.round(scrollY/10+1)}
+addEventListener('scroll',onS,{passive:true});onS();
+
+let C={};const rc=()=>{const s=getComputedStyle(document.documentElement);['green','blue','red','orange','purple','line','dim','bg','muted','panel'].forEach(k=>C[k]=s.getPropertyValue('--'+k).trim())};rc();
+document.addEventListener('pf:theme',()=>{rc();drawT()});
+const D=devicePixelRatio||1;
+const nn=$('#nn'),g=nn.getContext('2d');const L=[6,9,9,4];let nodes=[],edges=[],pulses=[],ep=0;
+function nnSize(){const r=nn.getBoundingClientRect();nn.width=r.width*D;nn.height=r.height*D;nodes=[];const w=nn.width,h=nn.height,px=w*.14,py=h*.16;
+  L.forEach((n,li)=>{const x=px+(w-2*px)*li/(L.length-1);for(let k=0;k<n;k++)nodes.push({l:li,x,y:py+(h-2*py)*(k+.5)/n,a:0})});
+  edges=[];nodes.forEach((a,ia)=>nodes.forEach((b,ib)=>{if(b.l===a.l+1)edges.push([ia,ib,Math.random()*2-1])}))}
+nnSize();addEventListener('resize',()=>{nnSize();tcSize();drawT()});
+setInterval(()=>{const st=nodes.map((n,k)=>n.l===0?k:-1).filter(k=>k>=0);spawn(st[Math.random()*st.length|0])},260);setInterval(()=>{$('#ep').textContent=++ep},900);
+function spawn(f){const o=edges.filter(e=>e[0]===f);if(o.length)pulses.push({e:o[Math.random()*o.length|0],t:0})}
+(function dn(){const w=nn.width,h=nn.height;g.clearRect(0,0,w,h);
+  edges.forEach(([a,b,wt])=>{g.strokeStyle=wt>0?C.green:C.blue;g.globalAlpha=.06+Math.abs(wt)*.12;g.lineWidth=D;g.beginPath();g.moveTo(nodes[a].x,nodes[a].y);g.lineTo(nodes[b].x,nodes[b].y);g.stroke()});g.globalAlpha=1;
+  pulses=pulses.filter(p=>{p.t+=.03;const A=nodes[p.e[0]],B=nodes[p.e[1]],x=A.x+(B.x-A.x)*p.t,y=A.y+(B.y-A.y)*p.t;g.fillStyle=C.green;g.shadowColor=C.green;g.shadowBlur=10*D;g.beginPath();g.arc(x,y,2.4*D,0,7);g.fill();g.shadowBlur=0;
+    if(p.t>=1){B.a=1;if(Math.random()<.75)spawn(p.e[1]);return false}return true});
+  nodes.forEach(n=>{n.a*=.94;g.fillStyle=C.bg;g.strokeStyle=n.a>.1?C.green:C.dim;g.lineWidth=1.5*D;g.beginPath();g.arc(n.x,n.y,7*D,0,7);g.fill();g.stroke();
+    if(n.a>.05){g.fillStyle=C.green;g.globalAlpha=n.a;g.beginPath();g.arc(n.x,n.y,4*D,0,7);g.fill();g.globalAlpha=1}});
+  requestAnimationFrame(dn)})();
+
+const tc=$('#tc'),t=tc.getContext('2d');let candles=[],price=100;
+function nextC(){const o=price,c=o+(Math.random()-.48)*2.4,hi=Math.max(o,c)+Math.random()*1.2,lo=Math.min(o,c)-Math.random()*1.2;price=c;return{o,c,h:hi,l:lo}}
+for(let k=0;k<70;k++)candles.push(nextC());
+function tcSize(){const r=tc.getBoundingClientRect();tc.width=r.width*D;tc.height=r.height*D}tcSize();
+const ma=(n,k)=>{if(k<n-1)return null;let s=0;for(let j=k-n+1;j<=k;j++)s+=candles[j].c;return s/n};
+const rsi=(k,n=14)=>{if(k<n)return 50;let u=0,d=0;for(let j=k-n+1;j<=k;j++){const x=candles[j].c-candles[j-1].c;x>0?u+=x:d-=x}return d===0?100:100-100/(1+u/d)};
+let vis=false;new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(tc);
+function drawT(){const w=tc.width,h=tc.height,ph=h*.72,N=candles.length,cw=w/N;t.clearRect(0,0,w,h);
+  const hi=Math.max(...candles.map(c=>c.h)),lo=Math.min(...candles.map(c=>c.l)),Y=v=>12*D+(hi-v)/(hi-lo)*(ph-24*D);
+  t.strokeStyle=C.line;t.lineWidth=D;for(let k=1;k<5;k++){t.beginPath();t.moveTo(0,ph*k/5);t.lineTo(w,ph*k/5);t.stroke()}
+  candles.forEach((c,k)=>{const x=k*cw+cw/2,up=c.c>=c.o;t.strokeStyle=t.fillStyle=up?C.green:C.red;t.beginPath();t.moveTo(x,Y(c.h));t.lineTo(x,Y(c.l));t.stroke();t.fillRect(x-cw*.32,Math.min(Y(c.o),Y(c.c)),cw*.64,Math.max(1,Math.abs(Y(c.o)-Y(c.c))))});
+  [[7,C.orange],[25,C.purple]].forEach(([n,col])=>{t.strokeStyle=col;t.lineWidth=1.6*D;t.beginPath();let st=false;candles.forEach((c,k)=>{const m=ma(n,k);if(m==null)return;const x=k*cw+cw/2;st?t.lineTo(x,Y(m)):(t.moveTo(x,Y(m)),st=true)});t.stroke()});
+  let last='HOLD';for(let k=26;k<N;k++){const a=ma(7,k),b=ma(25,k),a0=ma(7,k-1),b0=ma(25,k-1),r=rsi(k),x=k*cw+cw/2;
+    if(a0<=b0&&a>b&&r<70){t.fillStyle=C.green;t.beginPath();t.moveTo(x,Y(candles[k].l)+6*D);t.lineTo(x-5*D,Y(candles[k].l)+14*D);t.lineTo(x+5*D,Y(candles[k].l)+14*D);t.fill();last='BUY'}
+    if(a0>=b0&&a<b&&r>30){t.fillStyle=C.red;t.beginPath();t.moveTo(x,Y(candles[k].h)-6*D);t.lineTo(x-5*D,Y(candles[k].h)-14*D);t.lineTo(x+5*D,Y(candles[k].h)-14*D);t.fill();last='SELL'}}
+  const sg=$('#sig');sg.textContent='last signal: '+last;sg.style.color=last==='SELL'?C.red:C.green;
+  const top=ph+10*D,bh=h-top-8*D;t.strokeStyle=C.line;t.strokeRect(0,top,w,bh);t.setLineDash([4*D,4*D]);[30,70].forEach(v=>{t.beginPath();t.moveTo(0,top+bh*(1-v/100));t.lineTo(w,top+bh*(1-v/100));t.stroke()});t.setLineDash([]);
+  t.strokeStyle=C.blue;t.lineWidth=1.4*D;t.beginPath();candles.forEach((c,k)=>{const x=k*cw+cw/2,y=top+bh*(1-rsi(k)/100);k?t.lineTo(x,y):t.moveTo(x,y)});t.stroke();
+  t.fillStyle=C.muted;t.font=`${10*D}px JetBrains Mono`;t.fillText('RSI(14)',6*D,top+12*D)}
+drawT();setInterval(()=>{if(!vis)return;candles.shift();candles.push(nextC());drawT()},900);
+})();
+</script>
+</body>
+</html>
